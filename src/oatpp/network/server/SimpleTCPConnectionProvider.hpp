@@ -93,6 +93,7 @@ public:
    * `false` to use &id:oatpp::network::Connection;.
    */
   SimpleTCPConnectionProvider(v_uint16 port, bool useExtendedConnections = false);
+  SimpleTCPConnectionProvider(v_uint16 port, oatpp::String hostIpAddress, bool useExtendedConnections = false); 
 public:
 
   /**
@@ -157,9 +158,9 @@ public:
   v_uint16 getPort(){
     return m_port;
   }
-  
+
 };
-  
+
 }}}
 
 #endif /* oatpp_netword_server_SimpleTCPConnectionProvider_hpp */

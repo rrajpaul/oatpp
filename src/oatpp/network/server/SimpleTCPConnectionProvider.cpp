@@ -63,7 +63,7 @@ oatpp::data::stream::Context& SimpleTCPConnectionProvider::ExtendedConnection::g
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// SimpleTCPConnectionProvider
+// SimpleTCPConnectionProvider 
 
 SimpleTCPConnectionProvider::SimpleTCPConnectionProvider(v_uint16 port, bool useExtendedConnections)
   : m_port(port)
@@ -72,6 +72,16 @@ SimpleTCPConnectionProvider::SimpleTCPConnectionProvider(v_uint16 port, bool use
 {
   m_serverHandle = instantiateServer();
   setProperty(PROPERTY_HOST, "localhost");
+  setProperty(PROPERTY_PORT, oatpp::utils::conversion::int32ToStr(port));
+}
+
+SimpleTCPConnectionProvider::SimpleTCPConnectionProvider(v_uint16 port, oatpp::String hostIpAddress, bool useExtendedConnections)
+  : m_port(port)
+  , m_closed(false)
+  , m_useExtendedConnections(useExtendedConnections)
+{
+  m_serverHandle = instantiateServer();
+  setProperty(PROPERTY_HOST, hostIpAddress);
   setProperty(PROPERTY_PORT, oatpp::utils::conversion::int32ToStr(port));
 }
 
