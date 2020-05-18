@@ -78,6 +78,7 @@ private:
   std::atomic<bool> m_closed;
   oatpp::v_io_handle m_serverHandle;
   bool m_useExtendedConnections;
+  oatpp::String m_hostAddress;
 private:
   oatpp::v_io_handle instantiateServer();
 private:
@@ -92,8 +93,7 @@ public:
    * @param useExtendedConnections - set `true` to use &l:SimpleTCPConnectionProvider::ExtendedConnection;.
    * `false` to use &id:oatpp::network::Connection;.
    */
-  SimpleTCPConnectionProvider(v_uint16 port, bool useExtendedConnections = false);
-  SimpleTCPConnectionProvider(v_uint16 port, oatpp::String hostIpAddress, bool useExtendedConnections = false); 
+  SimpleTCPConnectionProvider(v_uint16 port, oatpp::String hostAddress = "localhost", bool useExtendedConnections = false);
 public:
 
   /**
@@ -102,8 +102,8 @@ public:
    * @param port
    * @return - `std::shared_ptr` to SimpleTCPConnectionProvider.
    */
-  static std::shared_ptr<SimpleTCPConnectionProvider> createShared(v_uint16 port, bool useExtendedConnections = false){
-    return std::make_shared<SimpleTCPConnectionProvider>(port, useExtendedConnections);
+  static std::shared_ptr<SimpleTCPConnectionProvider> createShared(v_uint16 port, oatpp::String hostAddress = "localhost", bool useExtendedConnections = false){
+    return std::make_shared<SimpleTCPConnectionProvider>(port, hostAddress, useExtendedConnections);
   }
 
   /**
@@ -158,9 +158,9 @@ public:
   v_uint16 getPort(){
     return m_port;
   }
-
+  
 };
-
+  
 }}}
 
 #endif /* oatpp_netword_server_SimpleTCPConnectionProvider_hpp */

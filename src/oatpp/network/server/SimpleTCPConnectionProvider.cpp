@@ -25,7 +25,7 @@
 #include "./SimpleTCPConnectionProvider.hpp"
 
 #include "oatpp/core/utils/ConversionUtils.hpp"
-
+#include <iostream>
 #include <fcntl.h>
 
 #if defined(WIN32) || defined(_WIN32)
@@ -63,25 +63,16 @@ oatpp::data::stream::Context& SimpleTCPConnectionProvider::ExtendedConnection::g
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// SimpleTCPConnectionProvider 
+// SimpleTCPConnectionProvider
 
-SimpleTCPConnectionProvider::SimpleTCPConnectionProvider(v_uint16 port, bool useExtendedConnections)
+SimpleTCPConnectionProvider::SimpleTCPConnectionProvider(v_uint16 port, oatpp::String hostAddress, bool useExtendedConnections)
   : m_port(port)
   , m_closed(false)
   , m_useExtendedConnections(useExtendedConnections)
 {
+  m_hostAddress = hostAddress;
   m_serverHandle = instantiateServer();
-  setProperty(PROPERTY_HOST, "localhost");
-  setProperty(PROPERTY_PORT, oatpp::utils::conversion::int32ToStr(port));
-}
-
-SimpleTCPConnectionProvider::SimpleTCPConnectionProvider(v_uint16 port, oatpp::String hostIpAddress, bool useExtendedConnections)
-  : m_port(port)
-  , m_closed(false)
-  , m_useExtendedConnections(useExtendedConnections)
-{
-  m_serverHandle = instantiateServer();
-  setProperty(PROPERTY_HOST, hostIpAddress);
+  setProperty(PROPERTY_HOST, m_hostAddress);
   setProperty(PROPERTY_PORT, oatpp::utils::conversion::int32ToStr(port));
 }
 
@@ -243,7 +234,10 @@ bool SimpleTCPConnectionProvider::prepareConnectionHandle(oatpp::v_io_handle han
 
 std::shared_ptr<oatpp::data::stream::IOStream> SimpleTCPConnectionProvider::getDefaultConnection() {
 
-  oatpp::v_io_handle handle = accept(m_serverHandle, nullptr, nullptr);
+  struct sockaddr_storage clientAddress;
+  socklen_t clientAddressSize = sizeof(clientAddress);
+
+  oatpp::v_io_handle handle = accept(m_serverHandle, (struct sockaddr*) &clientAddress, &clientAddressSize);
 
   if(!oatpp::isValidIOHandle(handle)) {
     return nullptr;
